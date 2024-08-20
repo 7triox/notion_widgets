@@ -22,9 +22,20 @@
         function getWeekNumber(d) {
             const date = new Date(d);
             date.setHours(0, 0, 0, 0);
-            date.setDate(date.getDate() + 3 - (date.getDay() + 6) % 7);
-            const week1 = new Date(date.getFullYear(), 0, 4);
-            return Math.round(((date - week1) / 86400000 + 1) / 7);
+
+            // Adjust the day to make Sunday the start of the week
+            const day = (date.getDay() + 6) % 7;
+
+            // Set the date to the nearest Sunday
+            date.setDate(date.getDate() - day + 1);
+
+            // Calculate the first week of the year starting on Sunday
+            const week1 = new Date(date.getFullYear(), 0, 1);
+            const weekDay1 = (week1.getDay() + 6) % 7;
+            week1.setDate(week1.getDate() - weekDay1 + 1);
+
+            // Calculate the week number
+            return Math.ceil(((date - week1) / 86400000 + 1) / 7);
         }
 
         function updateWeekCounter() {
