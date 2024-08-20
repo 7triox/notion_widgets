@@ -3,50 +3,79 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Week Counter</title>
+    <title>Week and Days Left</title>
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@400;700&display=swap" rel="stylesheet">
     <style>
         body {
+            background-color: #1e1e1e; /* Updated background color */
+            color: white;
+            font-family: 'Kanit', sans-serif; /* Apply the Kanit font */
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
             height: 100vh;
             margin: 0;
-            background-color: #000000;
-            font-family: Arial, sans-serif;
         }
-
-        .week-counter {
-            color: #FFFFFF;
-            font-size: 24px;
-            font-weight: bold;
-            background-color: #000000;
-            padding: 10px;
-            border-radius: 5px;
-            box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+        .container {
+            text-align: center;
+            position: relative; /* For positioning the countdown text */
+        }
+        .week {
+            font-size: 4rem; /* Twice the size of the original */
+            font-weight: bold; /* Make the text bold */
+            margin: 10px;
+            position: relative;
+        }
+        .week span {
+            font-size: 2rem; /* Half the size of the main text */
+        }
+        .countdown {
+            font-size: 1rem; /* Same size as "of X" */
+            position: absolute;
+            right: 0;
+            bottom: -1.5rem; /* Adjust as needed for spacing */
+            margin: 0;
         }
     </style>
 </head>
 <body>
-    <div class="week-counter" id="weekCounter">
-        Week 3
+    <div class="container">
+        <div class="week" id="week">
+            <div id="week-text"></div>
+            <div class="countdown" id="countdown"></div>
+        </div>
     </div>
-
     <script>
-        function getWeekNumber(d) {
-            const date = new Date(d);
-            date.setHours(0, 0, 0, 0);
-            date.setDate(date.getDate() + 3 - (date.getDay() + 6) % 7);
-            const week1 = new Date(date.getFullYear(), 0, 4);
-            return Math.round(((date - week1) / 86400000 + 1) / 7);
+        function getWeekNumber(date) {
+            const startDate = new Date(date.getFullYear(), 7, 13); // August 13
+            const startWeekDay = startDate.getDay() === 0 ? 7 : startDate.getDay(); // Adjust if startDate is a Sunday
+            const weekStartDate = new Date(startDate);
+            weekStartDate.setDate(startDate.getDate() - startWeekDay + 1); // Move to the preceding Sunday
+            const diffDays = Math.floor((date - weekStartDate) / (1000 * 60 * 60 * 24));
+            return Math.ceil((diffDays + 1) / 7); // Weeks are 1-based
         }
-
-        function updateWeekCounter() {
-            const now = new Date();
-            const weekNumber = getWeekNumber(now);
-            document.getElementById('weekCounter').textContent = `Week ${weekNumber}`;
+        
+        function getTotalWeeks(start, end) {
+            const diffDays = Math.floor((end - start) / (1000 * 60 * 60 * 24));
+            return Math.ceil(diffDays / 7);
         }
-
-        updateWeekCounter();
+        
+        function updateCounters() {
+            const today = new Date();
+            const targetDate = new Date('2024-09-13');
+            const startDate = new Date('2024-08-13');
+            
+            const daysDiff = targetDate - today;
+            const daysLeft = Math.ceil(daysDiff / (1000 * 60 * 60 * 24));
+            const weekNumber = getWeekNumber(today);
+            const totalWeeks = getTotalWeeks(startDate, targetDate);
+            
+            document.getElementById('week-text').innerHTML = `Week ${weekNumber} <span>of ${totalWeeks}</span>`;
+            document.getElementById('countdown').innerHTML = `Days left: <span>${daysLeft}</span>`;
+        }
+        
+        updateCounters();
     </script>
 </body>
 </html>
