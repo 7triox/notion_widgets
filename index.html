@@ -42,7 +42,7 @@
 </head>
 <body>
     <div class="week-counter" id="weekCounter">
-        Week 0
+        Week 1
         <div class="days-left" id="daysLeft">0 days left</div>
     </div>
 
@@ -50,26 +50,35 @@
         function getWeekNumber(d) {
             d = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
             d.setUTCDate(d.getUTCDate() - d.getUTCDay());
-            const yearStart = new Date(Date.UTC(d.getUTCFullYear(),0,1));
+            const yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
             const weekNumber = Math.ceil((((d - yearStart) / 86400000) + 1) / 7);
             return weekNumber;
         }
 
-        function daysLeftInWeek(d) {
-            const dayOfWeek = d.getUTCDay(); // Sunday = 0, Monday = 1, ..., Saturday = 6
-            return 6 - dayOfWeek;
+        function daysBetweenDates(startDate, endDate) {
+            const start = new Date(startDate);
+            const end = new Date(endDate);
+            const oneDay = 24 * 60 * 60 * 1000; // Milliseconds in a day
+            return Math.ceil((end - start) / oneDay);
         }
 
-        function updateWeekCounter(dateString) {
-            const date = new Date(dateString);
-            const weekNumber = getWeekNumber(date);
-            const daysLeft = daysLeftInWeek(date);
+        function updateWeekCounter(startDate, endDate) {
+            const today = new Date();
+            const startDateObj = new Date(startDate);
+            const endDateObj = new Date(endDate);
 
-            document.getElementById('weekCounter').textContent = 'Week ' + weekNumber;
-            document.getElementById('daysLeft').textContent = daysLeft + ' days left';
+            // Calculate the number of weeks and days left
+            const totalDaysLeft = daysBetweenDates(today, endDate);
+            const weeksLeft = Math.floor(totalDaysLeft / 7);
+            const daysLeft = totalDaysLeft % 7;
+            const currentWeek = getWeekNumber(today);
+
+            // Update the week counter display
+            document.getElementById('weekCounter').textContent = 'Week ' + currentWeek;
+            document.getElementById('daysLeft').textContent = weeksLeft + ' weeks ' + daysLeft + ' days left';
         }
 
-        updateWeekCounter('2024-09-13'); // Specific date
+        updateWeekCounter('2024-08-13', '2024-09-13'); // Start and end dates
     </script>
 </body>
 </html>
