@@ -5,42 +5,38 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Week Counter</title>
     <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #000;
+            font-family: Arial, sans-serif;
+        }
+
         .week-counter {
-            color: #FFFFFF;
-            font-size: 14px;
+            color: #fff;
+            font-size: 80px;
             font-weight: bold;
-            background-color: transparent;
         }
     </style>
 </head>
-<body style="background-color: #000000;">
-    <div class="week-counter" id="weekCounter">
-        Week 3
-    </div>
+<body>
+    <div class="week-counter" id="weekCounter"></div>
 
     <script>
         function getWeekNumber(d) {
-            const date = new Date(d);
-            date.setHours(0, 0, 0, 0);
-
-            // Adjust the day to make Sunday the start of the week
-            const day = (date.getDay() + 6) % 7;
-
-            // Set the date to the nearest Sunday
-            date.setDate(date.getDate() - day + 1);
-
-            // Calculate the first week of the year starting on Sunday
-            const week1 = new Date(date.getFullYear(), 0, 1);
-            const weekDay1 = (week1.getDay() + 6) % 7;
-            week1.setDate(week1.getDate() - weekDay1 + 1);
-
-            // Calculate the week number
-            return Math.ceil(((date - week1) / 86400000 + 1) / 7);
+            // Set date to the nearest Sunday
+            d.setDate(d.getDate() - d.getDay());
+            const startOfYear = new Date(d.getFullYear(), 0, 1);
+            const daysDifference = Math.floor((d - startOfYear) / (24 * 60 * 60 * 1000));
+            return Math.ceil((daysDifference + startOfYear.getDay() + 1) / 7);
         }
 
         function updateWeekCounter() {
-            const now = new Date();
-            const weekNumber = getWeekNumber(now);
+            const today = new Date();
+            const weekNumber = getWeekNumber(today);
             document.getElementById('weekCounter').textContent = `Week ${weekNumber}`;
         }
 
