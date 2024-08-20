@@ -3,61 +3,54 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Week Counter with Days Left</title>
+    <title>Week Counter</title>
     <style>
+        @font-face {
+            font-family: 'Good Times';
+            src: url('good_times_rg.otf') format('opentype');
+            font-weight: normal;
+            font-style: normal;
+        }
+
         body {
+            background-color: #000000; /* AMOLED black background */
+            color: #FFFFFF; /* White text */
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
             margin: 0;
-            background-color: #000;
-            font-family: Arial, sans-serif;
+            font-family: 'Good Times', Arial, sans-serif;
         }
 
         .week-counter {
-            color: #fff;
-            font-size: 80px;
+            font-size: 3rem;
             font-weight: bold;
-            position: relative;
-            text-align: center;
-        }
-
-        .days-left {
-            font-size: 20px;
-            font-weight: normal;
-            position: absolute;
-            bottom: -30px;
-            right: 0;
-            color: #fff;
         }
     </style>
 </head>
 <body>
-    <div class="week-counter">
-        <div id="weekText"></div>
-        <div class="days-left" id="daysLeft"></div>
-    </div>
+    <div class="week-counter" id="weekCounter">Week 3</div>
 
     <script>
         function getWeekNumber(d) {
-            // Set date to the nearest Sunday
-            d.setDate(d.getDate() - d.getDay());
-            const startOfYear = new Date(d.getFullYear(), 0, 1);
-            const daysDifference = Math.floor((d - startOfYear) / (24 * 60 * 60 * 1000));
-            return Math.ceil((daysDifference + startOfYear.getDay() + 1) / 7);
+            // Copy date so don't modify the original
+            d = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
+            // Set to nearest Sunday
+            d.setUTCDate(d.getUTCDate() - d.getUTCDay());
+            // Calculate week number
+            const yearStart = new Date(Date.UTC(d.getUTCFullYear(),0,1));
+            const weekNumber = Math.ceil((((d - yearStart) / 86400000) + 1) / 7);
+            return weekNumber;
         }
 
         function updateWeekCounter() {
             const today = new Date();
             const weekNumber = getWeekNumber(today);
-            const daysLeft = 6 - today.getDay(); // Days left until next Sunday
-
-            document.getElementById('weekText').textContent = `Week ${weekNumber}`;
-            document.getElementById('daysLeft').textContent = `(${daysLeft} days left)`;
+            document.getElementById('weekCounter').textContent = 'Week ' + weekNumber;
         }
 
-        updateWeekCounter();
+        updateWeekCounter(); // Update on load
     </script>
 </body>
 </html>
