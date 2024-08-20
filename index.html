@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Week Counter</title>
+    <title>Week Counter with Days Left</title>
     <style>
         body {
             display: flex;
@@ -19,11 +19,25 @@
             color: #fff;
             font-size: 80px;
             font-weight: bold;
+            position: relative;
+            text-align: center;
+        }
+
+        .days-left {
+            font-size: 20px;
+            font-weight: normal;
+            position: absolute;
+            bottom: -30px;
+            right: 0;
+            color: #fff;
         }
     </style>
 </head>
 <body>
-    <div class="week-counter" id="weekCounter"></div>
+    <div class="week-counter">
+        <div id="weekText"></div>
+        <div class="days-left" id="daysLeft"></div>
+    </div>
 
     <script>
         function getWeekNumber(d) {
@@ -37,7 +51,10 @@
         function updateWeekCounter() {
             const today = new Date();
             const weekNumber = getWeekNumber(today);
-            document.getElementById('weekCounter').textContent = `Week ${weekNumber}`;
+            const daysLeft = 6 - today.getDay(); // Days left until next Sunday
+
+            document.getElementById('weekText').textContent = `Week ${weekNumber}`;
+            document.getElementById('daysLeft').textContent = `(${daysLeft} days left)`;
         }
 
         updateWeekCounter();
