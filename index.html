@@ -28,16 +28,17 @@
             font-weight: bold;
             text-align: center;
             position: relative;
+            color: #FFFFFF; /* White text */
         }
 
         .days-left {
             font-size: 1rem;
-            color: #CCCCCC; /* Light gray text */
+            color: #FFFFFF; /* White text */
             position: absolute;
-            bottom: -1.5rem; /* Adjusted to position text below */
-            left: 0;
-            width: 100%; /* Ensures the text aligns with the width of the parent */
-            text-align: center; /* Center-align text if needed */
+            bottom: 0; /* Align to the bottom of the parent */
+            right: 0; /* Align to the right edge of the parent */
+            transform: translate(0, 100%); /* Move it below the parent element */
+            padding: 0.5rem; /* Add some space around */
         }
     </style>
 </head>
@@ -67,17 +68,16 @@
             const startDateObj = new Date(startDate);
             const endDateObj = new Date(endDate);
 
-            // Calculate the current week number
+            // Calculate the current week number based on the start date
             const currentWeek = getWeekNumber(today, startDate);
 
-            // Calculate the number of days and weeks left until the end date
+            // Calculate the number of days left until the end date
             const totalDaysLeft = daysBetweenDates(today, endDate);
-            const weeksLeft = Math.floor(totalDaysLeft / 7);
             const daysLeft = totalDaysLeft % 7;
 
-            // Update the week counter display
+            // Update the week counter and days left display
             document.getElementById('weekCounter').textContent = 'Week ' + currentWeek;
-            document.getElementById('daysLeft').textContent = weeksLeft + ' weeks ' + daysLeft + ' days left';
+            document.getElementById('daysLeft').textContent = daysLeft + ' days left';
         }
 
         updateWeekCounter('2024-08-13', '2024-09-13'); // Start and end dates
