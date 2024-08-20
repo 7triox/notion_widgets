@@ -3,84 +3,79 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Week Counter</title>
+    <title>Week and Days Left</title>
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        @font-face {
-            font-family: 'Good Times';
-            src: url('good_times_rg.otf') format('opentype');
-            font-weight: normal;
-            font-style: normal;
-        }
-
         body {
-            background-color: #000000; /* AMOLED black background */
-            color: #FFFFFF; /* White text */
+            background-color: black;
+            color: white;
+            font-family: 'Kanit', sans-serif; /* Apply the Kanit font */
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
             height: 100vh;
             margin: 0;
-            font-family: 'Good Times', Arial, sans-serif;
         }
-
-        .week-counter {
-            font-size: 3rem;
-            font-weight: bold;
+        .container {
             text-align: center;
-            position: relative;
-            color: #FFFFFF; /* White text */
+            position: relative; /* For positioning the countdown text */
         }
-
-        .days-left {
-            font-size: 1rem;
-            color: #FFFFFF; /* White text */
+        .week {
+            font-size: 4rem; /* Twice the size of the original */
+            font-weight: bold; /* Make the text bold */
+            margin: 10px;
+            position: relative;
+        }
+        .week span {
+            font-size: 2rem; /* Half the size of the main text */
+        }
+        .countdown {
+            font-size: 1rem; /* Same size as "of X" */
             position: absolute;
-            bottom: 0; /* Align to the bottom of the parent */
-            right: 0; /* Align to the right edge of the parent */
-            transform: translate(0, 100%); /* Move it below the parent element */
-            padding: 0.5rem; /* Add some space around */
+            right: 0;
+            bottom: -1.5rem; /* Adjust as needed for spacing */
+            margin: 0;
         }
     </style>
 </head>
 <body>
-    <div class="week-counter" id="weekCounter">
-        Week 1
-        <div class="days-left" id="daysLeft">0 days left</div>
+    <div class="container">
+        <div class="week" id="week">
+            <div id="week-text"></div>
+            <div class="countdown" id="countdown"></div>
+        </div>
     </div>
-
     <script>
-        function getWeekNumber(date, startDate) {
-            const start = new Date(startDate);
-            const diff = date - start;
-            const oneWeek = 7 * 24 * 60 * 60 * 1000; // milliseconds in a week
-            return Math.floor(diff / oneWeek) + 1;
+        function getWeekNumber(date) {
+            const startDate = new Date(date.getFullYear(), 7, 13); // August 13
+            const startWeekDay = startDate.getDay() === 0 ? 7 : startDate.getDay(); // Adjust if startDate is a Sunday
+            const weekStartDate = new Date(startDate);
+            weekStartDate.setDate(startDate.getDate() - startWeekDay + 1); // Move to the preceding Sunday
+            const diffDays = Math.floor((date - weekStartDate) / (1000 * 60 * 60 * 24));
+            return Math.ceil((diffDays + 1) / 7); // Weeks are 1-based
         }
-
-        function daysBetweenDates(startDate, endDate) {
-            const start = new Date(startDate);
-            const end = new Date(endDate);
-            const oneDay = 24 * 60 * 60 * 1000; // milliseconds in a day
-            return Math.ceil((end - start) / oneDay);
+        
+        function getTotalWeeks(start, end) {
+            const diffDays = Math.floor((end - start) / (1000 * 60 * 60 * 24));
+            return Math.ceil(diffDays / 7);
         }
-
-        function updateWeekCounter(startDate, endDate) {
+        
+        function updateCounters() {
             const today = new Date();
-            const startDateObj = new Date(startDate);
-            const endDateObj = new Date(endDate);
-
-            // Calculate the current week number based on the start date
-            const currentWeek = getWeekNumber(today, startDate);
-
-            // Calculate the number of days left until the end date
-            const totalDaysLeft = daysBetweenDates(today, endDate);
-            const daysLeft = totalDaysLeft % 7;
-
-            // Update the week counter and days left display
-            document.getElementById('weekCounter').textContent = 'Week ' + currentWeek;
-            document.getElementById('daysLeft').textContent = daysLeft + ' days left';
+            const targetDate = new Date('2024-09-13');
+            const startDate = new Date('2024-08-13');
+            
+            const daysDiff = targetDate - today;
+            const daysLeft = Math.ceil(daysDiff / (1000 * 60 * 60 * 24));
+            const weekNumber = getWeekNumber(today);
+            const totalWeeks = getTotalWeeks(startDate, targetDate);
+            
+            document.getElementById('week-text').innerHTML = `Week ${weekNumber} <span>of ${totalWeeks}</span>`;
+            document.getElementById('countdown').innerHTML = `Days left: <span>${daysLeft}</span>`;
         }
-
-        updateWeekCounter('2024-08-13', '2024-09-13'); // Start and end dates
+        
+        updateCounters();
     </script>
 </body>
 </html>
