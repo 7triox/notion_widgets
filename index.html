@@ -34,9 +34,10 @@
             font-size: 1rem;
             color: #CCCCCC; /* Light gray text */
             position: absolute;
-            bottom: -1.5rem;
-            right: 0;
-            transform: translateX(0%);
+            bottom: -1.5rem; /* Adjusted to position text below */
+            left: 0;
+            width: 100%; /* Ensures the text aligns with the width of the parent */
+            text-align: center; /* Center-align text if needed */
         }
     </style>
 </head>
@@ -47,18 +48,17 @@
     </div>
 
     <script>
-        function getWeekNumber(d) {
-            d = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
-            d.setUTCDate(d.getUTCDate() - d.getUTCDay());
-            const yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
-            const weekNumber = Math.ceil((((d - yearStart) / 86400000) + 1) / 7);
-            return weekNumber;
+        function getWeekNumber(date, startDate) {
+            const start = new Date(startDate);
+            const diff = date - start;
+            const oneWeek = 7 * 24 * 60 * 60 * 1000; // milliseconds in a week
+            return Math.floor(diff / oneWeek) + 1;
         }
 
         function daysBetweenDates(startDate, endDate) {
             const start = new Date(startDate);
             const end = new Date(endDate);
-            const oneDay = 24 * 60 * 60 * 1000; // Milliseconds in a day
+            const oneDay = 24 * 60 * 60 * 1000; // milliseconds in a day
             return Math.ceil((end - start) / oneDay);
         }
 
@@ -67,11 +67,13 @@
             const startDateObj = new Date(startDate);
             const endDateObj = new Date(endDate);
 
-            // Calculate the number of weeks and days left
+            // Calculate the current week number
+            const currentWeek = getWeekNumber(today, startDate);
+
+            // Calculate the number of days and weeks left until the end date
             const totalDaysLeft = daysBetweenDates(today, endDate);
             const weeksLeft = Math.floor(totalDaysLeft / 7);
             const daysLeft = totalDaysLeft % 7;
-            const currentWeek = getWeekNumber(today);
 
             // Update the week counter display
             document.getElementById('weekCounter').textContent = 'Week ' + currentWeek;
