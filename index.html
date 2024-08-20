@@ -26,31 +26,50 @@
         .week-counter {
             font-size: 3rem;
             font-weight: bold;
+            text-align: center;
+            position: relative;
+        }
+
+        .days-left {
+            font-size: 1rem;
+            color: #CCCCCC; /* Light gray text */
+            position: absolute;
+            bottom: -1.5rem;
+            right: 0;
+            transform: translateX(0%);
         }
     </style>
 </head>
 <body>
-    <div class="week-counter" id="weekCounter">Week 3</div>
+    <div class="week-counter" id="weekCounter">
+        Week 0
+        <div class="days-left" id="daysLeft">0 days left</div>
+    </div>
 
     <script>
         function getWeekNumber(d) {
-            // Copy date so don't modify the original
             d = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
-            // Set to nearest Sunday
             d.setUTCDate(d.getUTCDate() - d.getUTCDay());
-            // Calculate week number
             const yearStart = new Date(Date.UTC(d.getUTCFullYear(),0,1));
             const weekNumber = Math.ceil((((d - yearStart) / 86400000) + 1) / 7);
             return weekNumber;
         }
 
-        function updateWeekCounter() {
-            const today = new Date();
-            const weekNumber = getWeekNumber(today);
-            document.getElementById('weekCounter').textContent = 'Week ' + weekNumber;
+        function daysLeftInWeek(d) {
+            const dayOfWeek = d.getUTCDay(); // Sunday = 0, Monday = 1, ..., Saturday = 6
+            return 6 - dayOfWeek;
         }
 
-        updateWeekCounter(); // Update on load
+        function updateWeekCounter(dateString) {
+            const date = new Date(dateString);
+            const weekNumber = getWeekNumber(date);
+            const daysLeft = daysLeftInWeek(date);
+
+            document.getElementById('weekCounter').textContent = 'Week ' + weekNumber;
+            document.getElementById('daysLeft').textContent = daysLeft + ' days left';
+        }
+
+        updateWeekCounter('2024-09-13'); // Specific date
     </script>
 </body>
 </html>
