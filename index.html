@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Flip Clock</title>
+    <title>Week Counter</title>
     <style>
         body {
             display: flex;
@@ -11,81 +11,42 @@
             align-items: center;
             height: 100vh;
             margin: 0;
-            background-color: #000;
-            font-family: 'Courier New', Courier, monospace;
+            background-color: #000000;
+            font-family: Arial, sans-serif;
         }
 
-        .clock {
-            display: flex;
-            color: #fff;
-            font-size: 100px;
-        }
-
-        .flip {
-            position: relative;
-            width: 120px;
-            height: 160px;
-            background: #333;
-            margin: 0 5px;
-            border-radius: 10px;
-            overflow: hidden;
-            text-align: center;
-        }
-
-        .flip::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 50%;
-            background: #444;
-            border-bottom: 5px solid #222;
-            z-index: 1;
-        }
-
-        .flip::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: 50%;
-            background: #222;
-            z-index: 1;
-        }
-
-        .flip span {
-            display: block;
-            width: 100%;
-            height: 100%;
-            position: relative;
-            z-index: 2;
-            line-height: 160px;
+        .week-counter {
+            color: #FFFFFF;
+            font-size: 24px;
+            font-weight: bold;
+            background-color: #000000;
+            padding: 10px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
         }
     </style>
 </head>
 <body>
-    <div class="clock">
-        <div class="flip"><span id="hours"></span></div>
-        <div class="flip"><span id="minutes"></span></div>
-        <div class="flip"><span id="seconds"></span></div>
+    <div class="week-counter" id="weekCounter">
+        Week 3
     </div>
 
     <script>
-        function updateTime() {
-            const now = new Date();
-            const hours = String(now.getHours()).padStart(2, '0');
-            const minutes = String(now.getMinutes()).padStart(2, '0');
-            const seconds = String(now.getSeconds()).padStart(2, '0');
-
-            document.getElementById('hours').textContent = hours;
-            document.getElementById('minutes').textContent = minutes;
-            document.getElementById('seconds').textContent = seconds;
+        function getWeekNumber(d) {
+            const date = new Date(d);
+            date.setHours(0, 0, 0, 0);
+            date.setDate(date.getDate() + 3 - (date.getDay() + 6) % 7);
+            const week1 = new Date(date.getFullYear(), 0, 4);
+            return Math.round(((date - week1) / 86400000 + 1) / 7);
         }
 
-        setInterval(updateTime, 1000);
-        updateTime();
+        function updateWeekCounter() {
+            const now = new Date();
+            const weekNumber = getWeekNumber(now);
+            document.getElementById('weekCounter').textContent = `Week ${weekNumber}`;
+        }
+
+        updateWeekCounter();
     </script>
 </body>
 </html>
